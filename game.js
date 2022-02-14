@@ -1,11 +1,14 @@
-const statusDisplay = document.querySelector('.current--player');
-
 let currentPlayer = "X";
 let gameState = ["", "", "", "", "", "", "", ""];
 
-const currentPlayerTurn = () => `It's ${currentPlayer}'s turn`;
+let midGame = true;
 
-statusDisplay.innerHTML = currentPlayerTurn();
+const displayMessage = document.querySelector('.current--player');
+const currentPlayerTurn = () => `It's ${currentPlayer}'s turn.`;
+const winMessage = () => `${currentPlayer} has won!`;
+const drawMessage = () => `The game has ended with a draw.`;
+
+displayMessage.innerHTML = currentPlayerTurn();
 
 /**
  * Board: 0 1 2
@@ -40,11 +43,11 @@ function playerChange() {
     } else {
         currentPlayer = 'X';
     }
-    statusDisplay.innerHTML = currentPlayerTurn();
+    displayMessage.innerHTML = currentPlayerTurn();
 }
 
 function checkWin() {
-    let win = False;
+    let win = false;
 
     for (let i = 0; i <= 7; i++) {
         const winState = winningStates[i];
@@ -52,21 +55,26 @@ function checkWin() {
         let pos_b = gameState[winState[1]];
         let pos_c = gameState[winState[2]];
 
-        if (pos_a == pos_b && pos_b == pos_c) {
-            win = True;
-            break;
-        }
-        if (pos_a == '' || pos_b == '' || pos_c == '') {
+        if (pos_a === '' || pos_b === '' || pos_c === '') {
             continue;
+        }
+        if (pos_a === pos_b && pos_b === pos_c) {
+            win = true;
+            break;
         }
     }
 
     if (win) {
+        displayMessage.innerHTML = winMessage();
+        midGame = false;
         return;
     }
 
+    // if game has no empty positions...
     let draw = !gameState.includes("");
     if (draw) {
+        displayMessage.innerHTML = drawMessage();
+        midGame = false;
         return;
     }
 
@@ -78,7 +86,7 @@ function click_cell(click) {
     const cell = click.target;
     const index = parseInt(cell.getAttribute('index'));
 
-    if (gameState[index] != "") {
+    if (gameState[index] != "" || !midGame) {
         return;
     }
 
@@ -86,12 +94,13 @@ function click_cell(click) {
     checkWin();
 }
 
-function restart() {
+function reset() {
     currentPlayer = 'X';
     gameState = ["", "", "", "", "", "", "", "", ""];
-    statusDisplay.innerHTML = currentPlayerTurn();
+    displayMessage.innerHTML = currentPlayerTurn();
+    midGame = true;
     document.querySelectorAll('.cell').forEach(cell => cell.innerHTML = "");
 }
 
 document.querySelectorAll('.cell').forEach(cell => cell.addEventListener('click', click_cell));
-document.querySelector('.game--restart').addEventListener('click', restart);
+document.querySelector('.reset').addEventListener('click', reset);
