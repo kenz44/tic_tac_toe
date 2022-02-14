@@ -1,5 +1,5 @@
 let currentPlayer = "X";
-let gameState = ["", "", "", "", "", "", "", ""];
+let gameState = ["", "", "", "", "", "", "", "", ""];
 
 let midGame = true;
 
