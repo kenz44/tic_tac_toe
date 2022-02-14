@@ -76,7 +76,7 @@ function checkWin() {
 
 function click_cell(click) {
     const cell = click.target;
-    const index = parseInt(cell.getAttribute('cell--index'));
+    const index = parseInt(cell.getAttribute('index'));
 
     if (gameState[index] != "") {
         return;
